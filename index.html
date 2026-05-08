@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carta Gantt – Fondo Impulsa Proyectos Sociales y Comunitarios</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde:   #2ecc71;
+    --verde2:  #27ae60;
+    --lila:    #9b59b6;
+    --azul:    #3498db;
+    --naranja: #e67e22;
+    --rojo:    #e74c3c;
+    --cyan:    #1abc9c;
+    --amarillo:#f1c40f;
+    --rosa:    #e91e8c;
+    --bg:      #f4f7f0;
+    --card:    #ffffff;
+    --text:    #2c3e50;
+    --muted:   #7f8c8d;
+    --border:  #dfe6e9;
+    --shadow:  0 4px 24px rgba(46,204,113,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 50%, #1abc9c 100%);
+    padding: 32px 40px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content:'';
+    position:absolute; inset:0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 36px);
+    color: #fff;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  header p {
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ── PROJECT INFO CARD ── */
+  .card {
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 28px 32px;
+    margin-bottom: 28px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--verde2);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::after {
+    content:'';
+    flex:1;
+    height:2px;
+    background: linear-gradient(90deg, var(--verde) 0%, transparent 100%);
+    border-radius: 2px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  label {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+  }
+  input[type=text], input[type=date], select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #f9fafb;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px rgba(46,204,113,0.15);
+    background: #fff;
+  }
+
+  /* ── ACTIVITIES TABLE ── */
+  .activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Month selector */
+  .month-config {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    background: #f0faf4;
+    border-radius: 12px;
+    border: 1.5px dashed var(--verde);
+  }
+  .month-config label { margin: 0; white-space: nowrap; }
+  .month-config input[type=number] {
+    width: 70px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+  }
+  .month-config input:focus { border-color: var(--verde); }
+  .month-config span { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+  /* Activities rows */
+  #activities-container {
+    overflow-x: auto;
+  }
+  .gantt-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 700px;
+  }
+  .gantt-table th {
+    background: linear-gradient(135deg, #27ae60, #1abc9c);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .gantt-table th:first-child { border-radius: 10px 0 0 0; text-align: left; padding-left: 16px; }
+  .gantt-table th:last-child  { border-radius: 0 10px 0 0; }
+
+  .activity-row td {
+    padding: 8px 6px;
+    vertical-align: middle;
+    border-bottom: 1px solid #edf2f7;
+  }
+  .activity-row:last-child td { border-bottom: none; }
+  .activity-row:nth-child(even) { background: #f8fffe; }
+
+  .activity-row td input[type=text] {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  .activity-row td input[type=date] {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .color-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .row-num {
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--verde2);
+    text-align: center;
+  }
+
+  .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #c0392b;
+    font-size: 18px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background .15s;
+  }
+  .btn-delete:hover { background: #fdecea; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    border: none;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-add {
+    background: linear-gradient(135deg, var(--verde), var(--cyan));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(46,204,113,0.35);
+  }
+  .btn-add:hover { box-shadow: 0 6px 20px rgba(46,204,113,0.45); transform: translateY(-1px); }
+
+  .btn-preview {
+    background: linear-gradient(135deg, var(--azul), var(--lila));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(52,152,219,0.30);
+  }
+  .btn-preview:hover { box-shadow: 0 6px 20px rgba(52,152,219,0.40); transform: translateY(-1px); }
+
+  .btn-pdf {
+    background: linear-gradient(135deg, var(--naranja), var(--rojo));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(231,76,60,0.30);
+  }
+  .btn-pdf:hover { box-shadow: 0 6px 20px rgba(231,76,60,0.40); transform: translateY(-1px); }
+
+  .btn-clear {
+    background: #f0f0f0;
+    color: var(--muted);
+  }
+
+  .actions-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  /* ── GANTT PREVIEW ── */
+  #gantt-preview { display: none; }
+
+  .gantt-wrap {
+    background: #fff;
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: var(--shadow);
+  }
+
+  .gantt-header-info { margin-bottom: 24px; }
+  .gantt-header-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--verde2);
+  }
+  .gantt-header-info .meta {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .gantt-header-info .meta span {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .gantt-header-info .meta strong { color: var(--text); }
+
+  /* Chart itself */
+  .gantt-chart-container { overflow-x: auto; }
+
+  .gantt-chart {
+    min-width: 600px;
+    width: 100%;
+  }
+
+  .gc-months-row {
+    display: flex;
+    margin-left: 220px;
+    margin-bottom: 4px;
+  }
+  .gc-month-label {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--verde2);
+    padding: 4px 2px;
+    border-bottom: 2px solid var(--verde);
+  }
+
+  .gc-row {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    margin-bottom: 6px;
+  }
+  .gc-label {
+    width: 220px;
+    flex-shrink: 0;
+    padding-right: 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .gc-label .num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900; color: #fff;
+    flex-shrink: 0;
+  }
+  .gc-bars {
+    flex: 1;
+    position: relative;
+    height: 32px;
+    display: flex;
+  }
+  .gc-cell {
+    flex: 1;
+    border-left: 1px solid #edf2f7;
+    height: 100%;
+    position: relative;
+  }
+  .gc-cell:last-child { border-right: 1px solid #edf2f7; }
+  .gc-bar {
+    position: absolute;
+    top: 4px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 8px;
+    transition: opacity .2s;
+  }
+  .gc-bar:hover { opacity: 0.85; }
+
+  /* zebra */
+  .gc-row:nth-child(even) .gc-cell { background: #f9fffe; }
+
+  /* responsible tag */
+  .gc-responsible {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-top: 1px;
+    display: block;
+  }
+
+  /* legend */
+  .gantt-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1.5px dashed var(--border);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .legend-dot {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* ── TIPS ── */
+  .tips {
+    background: linear-gradient(135deg, #e8f8ef, #d5f5e3);
+    border-left: 4px solid var(--verde);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #1d6a3e;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .tips ul { margin-top: 6px; padding-left: 18px; }
+  .tips li { margin-top: 4px; }
+
+  /* ── PRINT / PDF ── */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+  @media print {
+    body { background: #fff; }
+    header, .card:not(#gantt-preview .card), #form-section, .actions-bar, .tips, .no-print {
+      display: none !important;
+    }
+    #gantt-preview {
+      display: block !important;
+    }
+    .gantt-wrap {
+      box-shadow: none;
+      border-radius: 0;
+      padding: 20px;
+    }
+    .gc-bar {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .gc-months-row, .gc-month-label {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    @page { size: A4 landscape; margin: 15mm; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .card { padding: 20px 16px; }
+    header { padding: 24px 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">🌱 Fondo Impulsa</div>
+  <h1>Carta Gantt<br>Proyectos Sociales y Comunitarios</h1>
+  <p>Planifica las actividades de tu proyecto de manera clara y visual</p>
+</header>
+
+<main>
+
+  <!-- TIPS -->
+  <div class="tips no-print">
+    💡 <strong>¿Cómo usar esta herramienta?</strong>
+    <ul>
+      <li>Completa los datos de tu proyecto en el formulario.</li>
+      <li>Configura la cantidad de meses que dura tu proyecto.</li>
+      <li>Agrega cada actividad con sus fechas de inicio y término.</li>
+      <li>Haz clic en <strong>"Ver Carta Gantt"</strong> para previsualizar.</li>
+      <li>Descarga el PDF con el botón naranja para subirlo a la plataforma.</li>
+    </ul>
+  </div>
+
+  <!-- FORM SECTION -->
+  <div id="form-section">
+
+    <!-- Project info -->
+    <div class="card">
+      <div class="card-title">📋 Datos del Proyecto</div>
+      <div class="grid-2" style="margin-bottom:16px">
+        <div>
+          <label>Nombre del Proyecto</label>
+          <input type="text" id="proj-name" placeholder="Ej: Huerto Comunitario La Esperanza">
+        </div>
+        <div>
+          <label>Organización / Grupo</label>
+          <input type="text" id="proj-org" placeholder="Ej: Junta de Vecinos Nº12">
+        </div>
+      </div>
+      <div class="grid-3">
+        <div>
+          <label>Responsable del Proyecto</label>
+          <input type="text" id="proj-resp" placeholder="Nombre y apellido">
+        </div>
+        <div>
+          <label>Fecha de Inicio del Proyecto</label>
+          <input type="date" id="proj-start">
+        </div>
+        <div>
+          <label>Fecha de Término del Proyecto</label>
+          <input type="date" id="proj-end">
+        </div>
+      </div>
+    </div>
+
+    <!-- Activities -->
+    <div class="card">
+      <div class="activity-header">
+        <div class="card-title" style="margin-bottom:0; flex:1">📅 Actividades del Proyecto</div>
+      </div>
+
+      <div class="month-config no-print">
+        <label>Duración del proyecto:</label>
+        <input type="number" id="num-months" value="6" min="1" max="24">
+        <span>meses</span>
+        <label style="margin-left:16px">Mes inicial (número):</label>
+        <input type="number" id="start-month" value="1" min="1" max="12">
+        <span id="month-preview" style="color:var(--verde2); font-weight:800"></span>
+        <button class="btn btn-clear no-print" onclick="updateMonthLabels()" style="padding:8px 14px; font-size:12px;">↺ Actualizar</button>
+      </div>
+
+      <div id="activities-container">
+        <table class="gantt-table" id="act-table">
+          <thead>
+            <tr>
+              <th style="width:32px">#</th>
+              <th style="min-width:200px; text-align:left; padding-left:12px">Actividad</th>
+              <th style="min-width:130px">Responsable</th>
+              <th style="min-width:130px">Fecha inicio</th>
+              <th style="min-width:130px">Fecha término</th>
+              <th style="width:40px"></th>
+            </tr>
+          </thead>
+          <tbody id="act-body"></tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap">
+        <button class="btn btn-add no-print" onclick="addActivity()">＋ Agregar Actividad</button>
+      </div>
+    </div>
+
+    <div class="actions-bar no-print">
+      <button class="btn btn-preview" onclick="generateGantt()">👁 Ver Carta Gantt</button>
+    </div>
+
+  </div>
+
+  <!-- GANTT PREVIEW -->
+  <div id="gantt-preview">
+    <div class="gantt-wrap" id="gantt-content">
+      <!-- filled by JS -->
+    </div>
+    <div class="actions-bar no-print" style="margin-top:20px">
+      <button class="btn btn-clear no-print" onclick="toggleView(false)">← Volver a editar</button>
+      <button class="btn btn-pdf no-print" onclick="downloadPDF()">⬇ Descargar PDF</button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── PALETTE ──
+const COLORS = [
+  '#27ae60','#2980b9','#8e44ad','#e67e22',
+  '#e91e8c','#1abc9c','#f39c12','#c0392b',
+  '#16a085','#2c3e50','#d35400','#7d3c98'
+];
+
+const MONTH_NAMES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                     'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+let activityCount = 0;
+
+function getMonthCount() {
+  return Math.max(1, Math.min(24, parseInt(document.getElementById('num-months').value) || 6));
+}
+function getStartMonth() {
+  return Math.max(1, Math.min(12, parseInt(document.getElementById('start-month').value) || 1));
+}
+
+function updateMonthLabels() {
+  const m = getStartMonth();
+  document.getElementById('month-preview').textContent = '→ Mes 1 = ' + MONTH_NAMES[m-1];
+}
+
+function addActivity(name='', resp='', start='', end='') {
+  activityCount++;
+  const idx = activityCount;
+  const color = COLORS[(idx-1) % COLORS.length];
+  const tbody = document.getElementById('act-body');
+  const tr = document.createElement('tr');
+  tr.className = 'activity-row';
+  tr.dataset.id = idx;
+  tr.innerHTML = `
+    <td class="row-num"><span class="color-dot" style="background:${color}; margin:auto; display:block;"></span></td>
+    <td><input type="text" placeholder="Ej: Taller de capacitación" value="${name}" class="act-name"></td>
+    <td><input type="text" placeholder="Ej: Equipo técnico" value="${resp}" class="act-resp"></td>
+    <td><input type="date" value="${start}" class="act-start"></td>
+    <td><input type="date" value="${end}" class="act-end"></td>
+    <td><button class="btn-delete" onclick="deleteRow(this)" title="Eliminar">✕</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function deleteRow(btn) {
+  btn.closest('tr').remove();
+  renumberRows();
+}
+
+function renumberRows() {
+  document.querySelectorAll('.activity-row').forEach((tr, i) => {
+    tr.querySelector('.color-dot').style.background = COLORS[i % COLORS.length];
+  });
+}
+
+function getActivities() {
+  const rows = document.querySelectorAll('.activity-row');
+  return Array.from(rows).map((tr, i) => ({
+    name:  tr.querySelector('.act-name').value.trim() || `Actividad ${i+1}`,
+    resp:  tr.querySelector('.act-resp').value.trim(),
+    start: tr.querySelector('.act-start').value,
+    end:   tr.querySelector('.act-end').value,
+    color: COLORS[i % COLORS.length]
+  }));
+}
+
+function toggleView(showGantt) {
+  document.getElementById('form-section').style.display = showGantt ? 'none' : '';
+  document.getElementById('gantt-preview').style.display = showGantt ? 'block' : 'none';
+  if (showGantt) window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function generateGantt() {
+  const activities = getActivities();
+  if (!activities.length) { alert('Agrega al menos una actividad para generar la Carta Gantt.'); return; }
+
+  const projName  = document.getElementById('proj-name').value.trim() || 'Mi Proyecto';
+  const projOrg   = document.getElementById('proj-org').value.trim();
+  const projResp  = document.getElementById('proj-resp').value.trim();
+  const projStart = document.getElementById('proj-start').value;
+  const projEnd   = document.getElementById('proj-end').value;
+  const numMonths = getMonthCount();
+  const startMonth = getStartMonth();
+
+  // Build month labels
+  const monthLabels = [];
+  for (let i = 0; i < numMonths; i++) {
+    monthLabels.push(MONTH_NAMES[(startMonth - 1 + i) % 12]);
+  }
+
+  // Project date range for bar calculation
+  let projStartDate = projStart ? new Date(projStart + 'T00:00:00') : null;
+  let projEndDate   = projEnd   ? new Date(projEnd   + 'T00:00:00') : null;
+
+  // If no project start/end, infer from activities
+  if (!projStartDate) {
+    const starts = activities.map(a => a.start).filter(Boolean).map(d => new Date(d+'T00:00:00'));
+    if (starts.length) projStartDate = new Date(Math.min(...starts));
+  }
+  if (!projEndDate) {
+    const ends = activities.map(a => a.end).filter(Boolean).map(d => new Date(d+'T00:00:00'));
+    if (ends.length) projEndDate = new Date(Math.max(...ends));
+  }
+
+  // Fallback: just use months 1..N
+  const totalDays = projStartDate && projEndDate
+    ? Math.max(1, (projEndDate - projStartDate) / 86400000)
+    : numMonths * 30;
+
+  // Build rows HTML
+  let rowsHtml = '';
+  activities.forEach((act, i) => {
+    // Calculate bar position (%)
+    let leftPct = 0, widthPct = 100 / numMonths;
+
+    if (act.start && projStartDate) {
+      const s = new Date(act.start + 'T00:00:00');
+      const e = act.end ? new Date(act.end + 'T00:00:00') : s;
+      const dayStart = Math.max(0, (s - projStartDate) / 86400000);
+      const dayEnd   = Math.max(dayStart + 1, (e - projStartDate) / 86400000);
+      leftPct  = (dayStart / totalDays) * 100;
+      widthPct = Math.max(2, ((dayEnd - dayStart) / totalDays) * 100);
+      // Clamp
+      if (leftPct + widthPct > 100) widthPct = 100 - leftPct;
+      if (leftPct < 0) leftPct = 0;
+    } else {
+      // Evenly distribute across all months
+      leftPct  = (i / activities.length) * 100;
+      widthPct = (1 / activities.length) * 100;
+    }
+
+    const cellsHtml = Array.from({length: numMonths}, () => `<div class="gc-cell"></div>`).join('');
+    const dateStr = (act.start && act.end)
+      ? `${fmt(act.start)} – ${fmt(act.end)}`
+      : (act.start ? fmt(act.start) : '');
+
+    rowsHtml += `
+      <div class="gc-row">
+        <div class="gc-label">
+          <span class="num" style="background:${act.color}">${i+1}</span>
+          <div>
+            ${act.name}
+            ${act.resp ? `<span class="gc-responsible">${act.resp}</span>` : ''}
+            ${dateStr ? `<span class="gc-responsible" style="color:var(--verde2)">${dateStr}</span>` : ''}
+          </div>
+        </div>
+        <div class="gc-bars">
+          ${cellsHtml}
+          <div class="gc-bar" style="background-color:${act.color}; left:${leftPct.toFixed(2)}%; width:${widthPct.toFixed(2)}%">
+            ${act.name.length < 20 ? act.name : ''}
+          </div>
+            ${act.name.length < 20 ? act.name : ''}
+          </div>
+        </div>
+      </div>`;
+  });
+
+  // Legend
+  const legendHtml = activities.map((act, i) => `
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${act.color}"></span>
+      ${i+1}. ${act.name}
+    </div>`).join('');
+
+  const metaHtml = [
+    projOrg  ? `<span>Organización: <strong>${projOrg}</strong></span>` : '',
+    projResp ? `<span>Responsable: <strong>${projResp}</strong></span>` : '',
+    projStart ? `<span>Inicio: <strong>${fmt(projStart)}</strong></span>` : '',
+    projEnd   ? `<span>Término: <strong>${fmt(projEnd)}</strong></span>` : '',
+  ].filter(Boolean).join('');
+
+  const monthHeaderHtml = monthLabels.map(m =>
+    `<div class="gc-month-label">${m}</div>`).join('');
+
+  document.getElementById('gantt-content').innerHTML = `
+    <div class="gantt-header-info">
+      <h2>🌱 ${projName}</h2>
+      ${metaHtml ? `<div class="meta">${metaHtml}</div>` : ''}
+    </div>
+    <div class="gantt-chart-container">
+      <div class="gantt-chart">
+        <div class="gc-months-row">${monthHeaderHtml}</div>
+        ${rowsHtml}
+      </div>
+    </div>
+    <div class="gantt-legend">${legendHtml}</div>
+    <p style="font-size:11px; color:var(--muted); margin-top:14px; text-align:right">
+      Generado con Carta Gantt – Fondo Impulsa Proyectos Sociales y Comunitarios
+    </p>
+  `;
+
+  toggleView(true);
+}
+
+function fmt(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+function downloadPDF() {
+  // Ensure gantt is visible first
+  const isVisible = document.getElementById('gantt-preview').style.display !== 'none';
+  if (!isVisible) generateGantt();
+  setTimeout(() => window.print(), 300);
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  updateMonthLabels();
+  // Sample activities to guide the user
+  addActivity('Reunión de planificación', 'Equipo coordinador', '', '');
+  addActivity('Taller con la comunidad', 'Equipo técnico', '', '');
+  addActivity('Ejecución de actividades', 'Todo el equipo', '', '');
+  addActivity('Evaluación y sistematización', 'Responsable técnico', '', '');
+});
+</script>
+</body>
+</html>
